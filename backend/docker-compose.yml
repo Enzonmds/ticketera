@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  backend:
+    build: ./backend
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app
+    environment:
+      # La URI se construye usando las variables del archivo .env
+      - MONGO_URI=mongodb://${MONGO_USER}:${MONGO_PASSWORD}@mongo:27017/${MONGO_DB_NAME}
+    depends_on:
+      - mongo
+
+  frontend:
+    build: ./frontend # Le dice a Docker: "Usa el Dockerfile que está en la carpeta ./frontend"
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/app # Sincroniza la carpeta ./frontend de la PC con /app dentro de la caja
+
+  # Servicio 3: Nuestra Base de Datos MongoDB
+
+  mongo:
+    image: mongo:8.0.12-rc0-noble
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    environment:
+      # Aquí también usamos las variables del .env
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USER}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD}
+      MONGO_INITDB_DATABASE: ${MONGO_DB_NAME}
+
+volumes:
+  mongo_data:

@@ -1,0 +1,21 @@
+# Archivo de variables de entorno locales
+.env
+
+# Archivos de Python / Django
+__pycache__/
+*.pyc
+db.sqlite3
+/static/
+/media/
+
+# Archivos de Node.js / React
+node_modules/
+build/
+.npm
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Archivos de sistema operativo y editores
+.DS_Store
+.vscode/
