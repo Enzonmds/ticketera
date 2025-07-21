@@ -1,0 +1,8 @@
+Django>=5.0,<5.1
+djangorestframework
+psycopg2-binary
+celery
+redis
+gunicorn
+python-decouple
+dj_database_url
