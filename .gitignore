@@ -1,5 +1,7 @@
 # Archivo de variables de entorno locales
 .env
+venv/
+.venv/
 
 # Archivos de Python / Django
 __pycache__/

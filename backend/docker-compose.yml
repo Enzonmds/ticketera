@@ -1,38 +1,36 @@
 version: '3.8'
 
 services:
-  backend:
-    build: ./backend
-    ports:
-      - "8000:8000"
+  db:
+    image: postgres:16-alpine
     volumes:
-      - ./backend:/app
+      - postgres_data:/var/lib/postgresql/data/
     environment:
-      # La URI se construye usando las variables del archivo .env
-      - MONGO_URI=mongodb://${MONGO_USER}:${MONGO_PASSWORD}@mongo:27017/${MONGO_DB_NAME}
-    depends_on:
-      - mongo
-
-  frontend:
-    build: ./frontend # Le dice a Docker: "Usa el Dockerfile que está en la carpeta ./frontend"
+      - POSTGRES_DB=ticketera_db
+      - POSTGRES_USER=user 
+      - POSTGRES_PASSWORD=password 
     ports:
-      - "3000:3000"
-    volumes:
-      - ./frontend:/app # Sincroniza la carpeta ./frontend de la PC con /app dentro de la caja
+      - "5432:5432" 
 
-  # Servicio 3: Nuestra Base de Datos MongoDB
-
-  mongo:
-    image: mongo:8.0.12-rc0-noble
+  redis: 
+    image: redis:7-alpine 
     ports:
-      - "27017:27017"
+      - "6379:6379" 
+  web: 
+    build: . 
+    command: sh -c "python manage.py migrate --noinput && python manage.py runserver 0.0.0.0:8000" 
     volumes:
-      - mongo_data:/data/db
-    environment:
-      # Aquí también usamos las variables del .env
-      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USER}
-      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD}
-      MONGO_INITDB_DATABASE: ${MONGO_DB_NAME}
+      - .:/app 
+    ports:
+      - "8000:8000" 
+    environment: 
+      - DATABASE_URL=postgres://user:password@db:5432/ticketera_db
+      - REDIS_URL=redis://redis:6379/0 # URL de conexión a Redis
+      - SECRET_KEY=your_insecure_development_secret_key 
+      - DEBUG=True 
+    depends_on: 
+      - db
+      - redis
 
-volumes:
-  mongo_data:
+volumes: 
+  postgres_data:
