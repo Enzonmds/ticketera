@@ -1,0 +1,19 @@
+# .gitattributes
+
+# Configura el comportamiento por defecto para que Git maneje los finales de línea automáticamente.
+* text=auto
+
+# Para archivos de texto específicos, asegúrate de que usen finales de línea de Unix (LF).
+# Esto es crucial para scripts y archivos de configuración que se ejecutan en Linux.
+*.py      text eol=lf
+*.sh      text eol=lf
+*.txt     text eol=lf
+*.md      text eol=lf
+*.json    text eol=lf
+*.yml     text eol=lf
+Dockerfile text eol=lf
+
+# Para archivos que definitivamente no son de texto, dile a Git que no los toque.
+*.png     binary
+*.jpg     binary
+*.pyc     binary

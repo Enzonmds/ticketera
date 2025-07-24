@@ -1,0 +1,40 @@
+name: Deploy to Staging (GCP)
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Deploy to Staging Server
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.STAGING_HOST }}
+          username: ${{ secrets.STAGING_USERNAME }}
+          key: ${{ secrets.STAGING_SSH_KEY }}
+          script: |
+            # Navega a la carpeta del proyecto en la VM
+            cd /home/${{ secrets.STAGING_USERNAME }}/ticketera 
+            
+            # Descarga los últimos cambios
+            git pull origin main
+            
+            # Crea o actualiza el archivo .env
+            echo "POSTGRES_DB=${{ secrets.POSTGRES_DB }}" > .env
+            echo "POSTGRES_USER=${{ secrets.POSTGRES_USER }}" >> .env
+            echo "POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> .env
+            echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> .env # <-- AÑADIDO
+            echo "DEBUG=${{ secrets.DEBUG }}" >> .env # <-- AÑADIDO
+            echo "DJANGO_SUPERUSER_USERNAME=${{ secrets.DJANGO_SUPERUSER_USERNAME }}" >> .env # <-- AÑADIDO
+            echo "DJANGO_SUPERUSER_EMAIL=${{ secrets.DJANGO_SUPERUSER_EMAIL }}" >> .env # <-- AÑADIDO
+            echo "DJANGO_SUPERUSER_PASSWORD=${{ secrets.DJANGO_SUPERUSER_PASSWORD }}" >> .env # <-- AÑADIDO
+            
+            # Reconstruye y levanta la aplicación con Docker Compose
+            docker compose up --build -d # Asegúrate de que el Dockerfile y docker-compose.yml estén configurados correctamente
+            
