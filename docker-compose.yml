@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:16-alpine
+    volumes:
+      # La ruta interna del contenedor de Postgres es fija. No debe cambiarse.
+      - postgres_data:/var/lib/postgresql/data/ # <-- CORREGIDO
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    ports:
+      - "5432:5432"
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+
+  web:
+    build: .
+    # El comando ahora busca manage.py en /app, que es donde lo montamos.
+    command: sh -c "python /app/manage.py migrate --noinput && python /app/manage.py runserver 0.0.0.0:8000" # <-- CORREGIDO
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
+      - REDIS_URL=redis://redis:6379/0
+      - SECRET_KEY=${SECRET_KEY}
+      - DEBUG=${DEBUG}
+    depends_on:
+      - db
+      - redis
+
+volumes:
+  postgres_data:
