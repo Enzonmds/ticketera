@@ -31,5 +31,5 @@ jobs:
             echo "POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> .env
             
             # Reconstruye y levanta la aplicación con Docker Compose
-            docker-compose up --build -d # Asegúrate de que el Dockerfile y docker-compose.yml estén configurados correctamente
+            docker compose up --build -d # Asegúrate de que el Dockerfile y docker-compose.yml estén configurados correctamente
             
