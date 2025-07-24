@@ -34,16 +34,16 @@ services:
       - db
       - redis
 
-  frontend: # <-- SERVICIO DEL FRONTEND AÑADIDO
-    build:
-      context: ./frontend
-    volumes:
-      # Monta el código para que los cambios se reflejen en tiempo real (hot-reloading)
-      - ./frontend:/app
-    ports:
-      - "3000:3000"
-    depends_on:
-      - backend
+   # --- SERVICIO DEL FRONTEND COMENTADO TEMPORALMENTE ---
+  # frontend:
+  #   build:
+  #     context: ./frontend
+  #   volumes:
+  #     - ./frontend:/app
+  #   ports:
+  #     - "3000:3000"
+  #   depends_on:
+  #     - backend
 
 volumes:
   postgres_data:
