@@ -34,7 +34,9 @@ jobs:
             echo "DJANGO_SUPERUSER_USERNAME=${{ secrets.DJANGO_SUPERUSER_USERNAME }}" >> .env # <-- AÑADIDO
             echo "DJANGO_SUPERUSER_EMAIL=${{ secrets.DJANGO_SUPERUSER_EMAIL }}" >> .env # <-- AÑADIDO
             echo "DJANGO_SUPERUSER_PASSWORD=${{ secrets.DJANGO_SUPERUSER_PASSWORD }}" >> .env # <-- AÑADIDO
-            
+            echo "DATABASE_URL=postgresql://${{ secrets.POSTGRES_USER }}:${{ secrets.POSTGRES_PASSWORD }}@${{ secrets.POSTGRES_HOST }}:${{ secrets.POSTGRES_PORT }}/${{ secrets.POSTGRES_DB }}" >> .env
+            echo "POSTGRES_HOST=${{ secrets.POSTGRES_HOST }}" >> .env
+            echo "POSTGRES_PORT=${{ secrets.POSTGRES_PORT }}" >> .env
             # Reconstruye y levanta la aplicación con Docker Compose
             docker compose up --build -d # Asegúrate de que el Dockerfile y docker-compose.yml estén configurados correctamente
             
